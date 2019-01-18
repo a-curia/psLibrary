@@ -106,8 +106,37 @@ namespace psLibrary_RestLevel3API.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id}")]
+        public IActionResult UpdateBookForAuthor([FromBody] BookForUpdateDto book, Guid authorId, Guid id)
+        {
+            if (book == null)
+            {
+                return BadRequest();
+            }
 
+            if (!_libraryRepository.AuthorExists(authorId))
+            {
+                return NotFound();
+            }
 
+            var bookForAuthorFromRepo = _libraryRepository.GetBookForAuthor(authorId, id);
+
+            if (bookForAuthorFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            AutoMapper.Mapper.Map(book, bookForAuthorFromRepo); // ??
+
+            _libraryRepository.UpdateBookForAuthor(bookForAuthorFromRepo);
+
+            if (!_libraryRepository.Save())
+            {
+                throw new Exception($"Updateing book {id} for author {authorId} failed on save!");
+            }
+
+            return NoContent();
+        }
 
 
     }
