@@ -43,7 +43,7 @@ namespace psLibrary_RestLevel3API.Controllers
             return Ok(authors);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetAuthorRoute")]
         public IActionResult GetAuthor(Guid id)
         {
             //if (!_libraryRepository.AuthorExists(id)) // this makes another call check IO which is not good
@@ -61,6 +61,28 @@ namespace psLibrary_RestLevel3API.Controllers
             var author = Mapper.Map<AuthorDto>(authorFromRepo);
 
             return Ok(author);
+        }
+
+        [HttpPost]
+        public IActionResult CreateAuthor([FromBody] AuthorForCreationDto author)
+        {
+            if (author == null)
+            {
+                return BadRequest();
+            }
+
+            var authorEntity = Mapper.Map<Entities.Author>(author);
+
+            _libraryRepository.AddAuthor(authorEntity);
+            if (!_libraryRepository.Save())
+            {
+                throw new Exception("creating an author failed on save.");
+            }
+
+            var authorToReturn = Mapper.Map<AuthorDto>(authorEntity);
+
+            return CreatedAtRoute("GetAuthorRoute", new {id = authorToReturn.Id}, authorToReturn);
+
         }
 
 
