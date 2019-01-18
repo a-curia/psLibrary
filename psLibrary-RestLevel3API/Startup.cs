@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using psLibrary_RestLevel3API.Entities;
+using psLibrary_RestLevel3API.Helpers;
 using psLibrary_RestLevel3API.Services;
 
 namespace psLibrary_RestLevel3API
@@ -52,6 +53,16 @@ namespace psLibrary_RestLevel3API
             {
                 app.UseHsts();
             }
+
+
+            AutoMapper.Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<Entities.Author, Models.AuthorDto>()
+                    .ForMember(des => des.Name, opt=> opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
+                    .ForMember(des => des.Age, opt => opt.MapFrom( src=> src.DateOfBirth.GetCurrentAge())); 
+
+            });
+
 
             app.UseHttpsRedirection();
 

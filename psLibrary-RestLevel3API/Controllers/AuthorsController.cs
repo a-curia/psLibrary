@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using psLibrary_RestLevel3API.Helpers;
 using psLibrary_RestLevel3API.Models;
 using psLibrary_RestLevel3API.Services;
+using AutoMapper;
 
 namespace psLibrary_RestLevel3API.Controllers
 {
@@ -22,18 +23,19 @@ namespace psLibrary_RestLevel3API.Controllers
         public IActionResult GetAuthors()
         {
             var authorsFromRepo = _libraryRepository.GetAuthors();
-            var authors = new List<AuthorDto>();
+            //var authors = new List<AuthorDto>();
 
-            foreach (var author in authorsFromRepo)
-            {
-                authors.Add(new AuthorDto()
-                {
-                    Id = author.Id,
-                    Name = $"{author.FirstName} {author.LastName}",
-                    Genre = author.Genre,
-                    Age = author.DateOfBirth.GetCurrentAge()
-                });
-            }
+            //foreach (var author in authorsFromRepo)
+            //{
+            //    authors.Add(new AuthorDto()
+            //    {
+            //        Id = author.Id,
+            //        Name = $"{author.FirstName} {author.LastName}",
+            //        Genre = author.Genre,
+            //        Age = author.DateOfBirth.GetCurrentAge()
+            //    });
+            //}
+            var authors = Mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo);
 
             return new JsonResult(authors);
         }
