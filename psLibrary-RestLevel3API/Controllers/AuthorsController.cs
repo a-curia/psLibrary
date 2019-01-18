@@ -85,6 +85,28 @@ namespace psLibrary_RestLevel3API.Controllers
 
         }
 
+        [HttpPost("onego")] // create author and it's books in one step
+        public IActionResult CreateAuthorWithBooks([FromBody] AuthorBooksForCreationDto author)
+        {
+            if (author == null)
+            {
+                return BadRequest();
+            }
+
+            var authorEntity = Mapper.Map<Entities.Author>(author);
+
+            _libraryRepository.AddAuthor(authorEntity);
+            if (!_libraryRepository.Save())
+            {
+                throw new Exception("creating an author failed on save.");
+            }
+
+            var authorToReturn = Mapper.Map<AuthorDto>(authorEntity);
+
+            return CreatedAtRoute("GetAuthorRoute", new { id = authorToReturn.Id }, authorToReturn);
+
+        }
+
 
     }
 }
