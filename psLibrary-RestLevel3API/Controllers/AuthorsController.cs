@@ -22,6 +22,9 @@ namespace psLibrary_RestLevel3API.Controllers
 
         public IActionResult GetAuthors()
         {
+
+            //throw  new Exception("Random exception for testing purpose!");
+
             var authorsFromRepo = _libraryRepository.GetAuthors();
             //var authors = new List<AuthorDto>();
 
