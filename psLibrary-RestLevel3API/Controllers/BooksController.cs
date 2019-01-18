@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.JsonPatch;
 using psLibrary_RestLevel3API.Entities;
 using psLibrary_RestLevel3API.Models;
 using psLibrary_RestLevel3API.Services;
@@ -149,6 +150,44 @@ namespace psLibrary_RestLevel3API.Controllers
             if (!_libraryRepository.Save())
             {
                 throw new Exception($"Updateing book {id} for author {authorId} failed on save!");
+            }
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult PartiallyUpdateBookForAuthor(Guid authorId, Guid id, [FromBody] JsonPatchDocument<BookForUpdateDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            if (!_libraryRepository.AuthorExists(authorId))
+            {
+                return NotFound();
+            }
+
+            var bookForAuthorFromRepo = _libraryRepository.GetBookForAuthor(authorId, id);
+
+            if (bookForAuthorFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            var bookToPatch = AutoMapper.Mapper.Map<BookForUpdateDto>(bookForAuthorFromRepo);
+
+            patchDoc.ApplyTo(bookToPatch);
+
+            // add validation 
+
+            AutoMapper.Mapper.Map(bookToPatch, bookForAuthorFromRepo);
+
+            _libraryRepository.UpdateBookForAuthor(bookForAuthorFromRepo);
+
+            if (!_libraryRepository.Save())
+            {
+                throw new Exception($"Patching book {id} for author {authorId} faild on save!");
             }
 
             return NoContent();
