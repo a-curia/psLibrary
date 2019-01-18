@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using psLibrary_RestLevel3API.Entities;
 using psLibrary_RestLevel3API.Models;
 using psLibrary_RestLevel3API.Services;
 
@@ -33,7 +34,7 @@ namespace psLibrary_RestLevel3API.Controllers
             return Ok(booksForAuthor);
         }
 
-        [HttpGet("id")] // book id
+        [HttpGet("id", Name = "GetBookForAuthorRoute")] // book id
         public IActionResult GetBookForAuthor(Guid authorId, Guid id)
         {
             if (!_libraryRepository.AuthorExists(authorId))
@@ -53,6 +54,32 @@ namespace psLibrary_RestLevel3API.Controllers
             return Ok(bookForAuthor);
         }
 
+
+        public IActionResult CreateBookForAuthor(Guid authorId, [FromBody] BookForCreationDto book)
+        {
+            if (book == null)
+            {
+                return BadRequest();
+            }
+
+            if (!_libraryRepository.AuthorExists(authorId))
+            {
+                return NotFound();
+            }
+
+            var bookEntity = AutoMapper.Mapper.Map<Entities.Book>(book);
+
+            _libraryRepository.AddBookForAuthor(authorId, bookEntity);
+
+            if (!_libraryRepository.Save())
+            {
+                throw  new Exception($"creating a book for author {authorId} faild on save!");
+            }
+
+            var bookToReturn = AutoMapper.Mapper.Map<Models.BookDto>(bookEntity);
+
+            return CreatedAtRoute("GetBookForAuthorRoute", new { authorId = authorId, id = bookToReturn.Id}, bookToReturn);
+        }
 
 
 

@@ -80,6 +80,8 @@ namespace psLibrary_RestLevel3API
 
                 cfg.CreateMap<Models.AuthorForCreationDto, Entities.Author>();
 
+                cfg.CreateMap<Models.BookForCreationDto, Entities.Book>();
+
             });
 
 
