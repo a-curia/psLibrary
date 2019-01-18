@@ -37,17 +37,27 @@ namespace psLibrary_RestLevel3API.Controllers
             //}
             var authors = Mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo);
 
-            return new JsonResult(authors);
+            return Ok(authors);
         }
 
         [HttpGet("{id}")]
         public IActionResult GetAuthor(Guid id)
         {
+            //if (!_libraryRepository.AuthorExists(id)) // this makes another call check IO which is not good
+            //{
+            //    return NotFound();
+            //}
+
             var authorFromRepo = _libraryRepository.GetAuthor(id);
+
+            if (authorFromRepo == null)
+            {
+                return NotFound();
+            }
 
             var author = Mapper.Map<AuthorDto>(authorFromRepo);
 
-            return new JsonResult(author);
+            return Ok(author);
         }
 
 
