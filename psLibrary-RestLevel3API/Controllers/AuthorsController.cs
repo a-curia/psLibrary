@@ -7,6 +7,7 @@ using psLibrary_RestLevel3API.Helpers;
 using psLibrary_RestLevel3API.Models;
 using psLibrary_RestLevel3API.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 
 namespace psLibrary_RestLevel3API.Controllers
 {
@@ -105,6 +106,17 @@ namespace psLibrary_RestLevel3API.Controllers
 
             return CreatedAtRoute("GetAuthorRoute", new { id = authorToReturn.Id }, authorToReturn);
 
+        }
+
+        [HttpPost("{id}")] // we use for check not for real POST - this is not allowed
+        public IActionResult BlockAuthorCreation(Guid id)
+        {
+            if (_libraryRepository.AuthorExists(id))
+            {
+                return new StatusCodeResult(StatusCodes.Status409Conflict);
+            }
+
+            return NotFound();
         }
 
 
