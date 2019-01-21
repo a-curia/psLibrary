@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Logging;
 using psLibrary_RestLevel3API.Entities;
 using psLibrary_RestLevel3API.Helpers;
 using psLibrary_RestLevel3API.Models;
@@ -15,10 +16,12 @@ namespace psLibrary_RestLevel3API.Controllers
     [Route("api/authors/{authorId}/books")]
     public class BooksController : Controller
     {
+        private readonly ILogger<BooksController> _logger;
         private readonly ILibraryRepository _libraryRepository;
 
-        public BooksController(ILibraryRepository libraryRepository)
+        public BooksController(ILibraryRepository libraryRepository, ILogger<BooksController> logger)
         {
+            _logger = logger;
             _libraryRepository = libraryRepository;
         }
 
@@ -116,6 +119,8 @@ namespace psLibrary_RestLevel3API.Controllers
             {
                 throw new Exception($"Deleting book {id} for author {authorId} failed on save!");
             }
+
+            _logger.LogInformation(100,$"Book {id} for author {authorId} was deleted.");
 
             return NoContent();
         }
