@@ -5,8 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
 using psLibrary_RestLevel3API.Entities;
+using psLibrary_RestLevel3API.Helpers;
 using psLibrary_RestLevel3API.Models;
 using psLibrary_RestLevel3API.Services;
+using UnprocessableEntityObjectResult = psLibrary_RestLevel3API.Helpers.UnprocessableEntityObjectResult;
 
 namespace psLibrary_RestLevel3API.Controllers
 {
@@ -66,6 +68,17 @@ namespace psLibrary_RestLevel3API.Controllers
             if (!_libraryRepository.AuthorExists(authorId))
             {
                 return NotFound();
+            }
+
+            if (book.Description == book.Title)
+            {
+                ModelState.AddModelError(nameof(BookForCreationDto), "The provided description should be different from the title.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                // return 422
+                return new UnprocessableEntityObjectResult(ModelState);
             }
 
             var bookEntity = AutoMapper.Mapper.Map<Entities.Book>(book);
