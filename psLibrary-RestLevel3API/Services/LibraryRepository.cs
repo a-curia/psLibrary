@@ -78,6 +78,14 @@ namespace psLibrary_RestLevel3API.Services
                     collectionBeforePaging.Where(a => a.Genre.ToLowerInvariant() == genreFromWhereClause);
             }
 
+            if (!string.IsNullOrEmpty(authorsResourceParameters.SearchQuery))
+            {
+                // trim & ignore casing
+                var searchQueryFromWhereClause = authorsResourceParameters.SearchQuery.Trim().ToLowerInvariant();
+                collectionBeforePaging =
+                    collectionBeforePaging.Where(a => a.Genre.ToLowerInvariant().Contains(searchQueryFromWhereClause) || a.FirstName.ToLowerInvariant().Contains(searchQueryFromWhereClause) || a.LastName.ToLowerInvariant().Contains(searchQueryFromWhereClause));
+            }
+
             return PagedList<Author>.Create(collectionBeforePaging, authorsResourceParameters.PageNumber, authorsResourceParameters.PageSize);
         }
 

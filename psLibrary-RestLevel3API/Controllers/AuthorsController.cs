@@ -82,6 +82,7 @@ namespace psLibrary_RestLevel3API.Controllers
                     return _urlHelper.Link("GetAuthorsRoute",
                         new
                         {
+                            searchQuery = authorsResourceParameters.SearchQuery,
                             genre = authorsResourceParameters.Genre,
                             pageNumber = authorsResourceParameters.PageNumber - 1,
                             pageSize = authorsResourceParameters.PageSize
@@ -90,6 +91,7 @@ namespace psLibrary_RestLevel3API.Controllers
                     return _urlHelper.Link("GetAuthorsRoute",
                         new
                         {
+                            searchQuery = authorsResourceParameters.SearchQuery,
                             genre = authorsResourceParameters.Genre,
                             pageNumber = authorsResourceParameters.PageNumber + 1,
                             pageSize = authorsResourceParameters.PageSize
@@ -98,6 +100,7 @@ namespace psLibrary_RestLevel3API.Controllers
                     return _urlHelper.Link("GetAuthorsRoute",
                         new
                         {
+                            searchQuery = authorsResourceParameters.SearchQuery,
                             genre = authorsResourceParameters.Genre,
                             pageNumber = authorsResourceParameters.PageNumber,
                             pageSize = authorsResourceParameters.PageSize

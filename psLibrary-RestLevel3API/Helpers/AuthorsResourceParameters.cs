@@ -20,5 +20,6 @@ namespace psLibrary_RestLevel3API.Helpers
         }
 
         public string Genre { get; set; }
+        public string SearchQuery { get; set; }
     }
 }
