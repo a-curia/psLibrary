@@ -16,17 +16,22 @@ namespace psLibrary_RestLevel3API.Controllers
     {
         private readonly ILibraryRepository _libraryRepository;
 
+        //const int maxAuthorPageSize = 20;
+
         public AuthorsController(ILibraryRepository libraryRepository)
         {
             _libraryRepository = libraryRepository;
         }
 
-        public IActionResult GetAuthors()
+        //public IActionResult GetAuthors([FromQuery(Name = "page")] int pageNumber = 1, 
+        //    [FromQuery(Name = "size")] int pageSize = 5)
+        public IActionResult GetAuthors(AuthorsResourceParameters authorsResourceParameters)
         {
+            //pageSize = (pageSize > maxAuthorPageSize) ? maxAuthorPageSize : pageSize;
 
             //throw  new Exception("Random exception for testing purpose!");
 
-            var authorsFromRepo = _libraryRepository.GetAuthors();
+            var authorsFromRepo = _libraryRepository.GetAuthors(authorsResourceParameters);
             //var authors = new List<AuthorDto>();
 
             //foreach (var author in authorsFromRepo)
@@ -45,7 +50,7 @@ namespace psLibrary_RestLevel3API.Controllers
         }
 
         [HttpGet("{id}", Name = "GetAuthorRoute")]
-        public IActionResult GetAuthor(Guid id)
+        public IActionResult GetAuthor([FromRoute] Guid id) // [FromRoute] is not necesary in here
         {
             //if (!_libraryRepository.AuthorExists(id)) // this makes another call check IO which is not good
             //{
