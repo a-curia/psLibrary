@@ -198,6 +198,18 @@ namespace psLibrary_RestLevel3API.Controllers
                 var bookDto = new BookForUpdateDto();
                 patchDoc.ApplyTo(bookDto);
 
+                if (bookDto.Description == bookDto.Title)
+                {
+                    ModelState.AddModelError(nameof(BookForUpdateDto), "The provided description should be different from the title.");
+                }
+
+                TryValidateModel(bookDto);
+
+                if (!ModelState.IsValid)
+                {
+                    return new UnprocessableEntityObjectResult(ModelState);
+                }
+
                 var bookToAdd = AutoMapper.Mapper.Map<Book>(bookDto);
                 bookToAdd.Id = id;
 
@@ -217,7 +229,19 @@ namespace psLibrary_RestLevel3API.Controllers
 
             var bookToPatch = AutoMapper.Mapper.Map<BookForUpdateDto>(bookForAuthorFromRepo);
 
-            patchDoc.ApplyTo(bookToPatch);
+            patchDoc.ApplyTo(bookToPatch, ModelState);
+
+            if (bookToPatch.Description == bookToPatch.Title)
+            {
+                ModelState.AddModelError(nameof(BookForUpdateDto), "The provided descritpion should be different from the title.");
+            }
+
+            TryValidateModel(bookToPatch);
+
+            if (!ModelState.IsValid)
+            {
+                return new UnprocessableEntityObjectResult(ModelState);
+            }
 
             // add validation 
 
