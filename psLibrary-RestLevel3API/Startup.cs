@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NLog.Extensions.Logging;
 using psLibrary_RestLevel3API.Entities;
 using psLibrary_RestLevel3API.Helpers;
 using psLibrary_RestLevel3API.Services;
@@ -56,6 +57,8 @@ namespace psLibrary_RestLevel3API
 
             loggerFactory.AddConsole();
             loggerFactory.AddDebug(LogLevel.Information);
+            //loggerFactory.AddProvider(new NLogLoggerProvider());
+            loggerFactory.AddNLog();
 
             if (env.IsDevelopment())
             {
